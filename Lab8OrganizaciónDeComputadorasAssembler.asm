@@ -43,6 +43,8 @@ _start:
     mov edx, 9
     int 0x80
 
+    jmp veredad
+veredad:
     ; se imprime la palabra edad
     mov eax, 4
     mov ebx, 1
@@ -60,12 +62,10 @@ _start:
     ; se comprueba si la edad es mayor a 18 años
     mov ax, [edad]
     cmp ax, 18
+    jmp veringresos
     jge OK ; salta si la edad es mayor o igual a 18 años
 
-    ; limpio los registros
-    mov ax, 0
-    mov bx, 0
-
+veringresos:
     ; se imprime la palabra INGRESOS
     mov eax, 4
     mov ebx, 1
@@ -93,10 +93,8 @@ _start:
     cmp bx, ax
     jle OK
 
-    ; se limpian los registros
-    mov ax, 0
-    mov bx, 0
-
+    jmp vermes
+vermes:
     ; se imprime la palabra MESES DE CONTINUIDAD LABORAL
     mov eax, 4
     mov ebx, 1
@@ -117,10 +115,9 @@ _start:
     cmp ax, bx
     jge OK
 
-    ; se limpian los registros
-    mov ax, 0
-    mov bx, 0
+    jmp vercal
 
+vercal:
     ; se imprime el título de calificación
     mov eax, 4
     mov ebx, 1
@@ -150,19 +147,12 @@ _start:
     cmp al, bl
     je OK
 
-    ; se limpian los espacios en memoria
-    mov ax, 0
-    mov bx, 0
-
     ; se hace la verificación sobre los requisitos cumplidos
     mov ax, [rq]
     mov bx, 4
     cmp ax, bx
     je aprobado
-
-    mov eax, 1
-    xor ebx, ecx
-    int 0x80
+    jne noaprobado
 
     ; Es necesario indicar la salida del programa en NASM
     ; Este label me permite imprimir OK para verificar que se cumple el requisito
@@ -179,12 +169,26 @@ OK:
     mov ecx, msg3 ; imprime OK
     mov edx, 3 ; longitud del mensaje, en este caso el mensaje es OK son 3
     int 0x80
+
+
+
 aprobado:
     ; Imprime que el crédito ha sido aprobado
     mov eax, 4
     mov ebx, 1
     mov ecx, msg1
     mov edx, 25
+    int 0x80
+
+    ; Salto a la salida del programa
+    jmp exit
+
+noaprobado:
+     ; Imprime que el crédito no ha sido aprobado
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg2
+    mov edx, 28
     int 0x80
 
     ; Salto a la salida del programa
